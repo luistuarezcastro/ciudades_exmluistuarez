@@ -17,6 +17,7 @@
 package com.example.inventory.ui.home
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,12 +25,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -43,6 +46,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -52,9 +56,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
-import com.example.inventory.data.Item
+import com.example.inventory.data.ciudad
 import com.example.inventory.ui.AppViewModelProvider
-import com.example.inventory.ui.item.formatedPrice
 import com.example.inventory.ui.navigation.NavigationDestination
 import com.example.inventory.ui.theme.InventoryTheme
 
@@ -62,10 +65,6 @@ object HomeDestination : NavigationDestination {
     override val route = "home"
     override val titleRes = R.string.app_name
 }
-
-/**
- * Entry route for Home screen
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -95,7 +94,7 @@ fun HomeScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.item_entry_title)
+                    contentDescription = stringResource(R.string.ciudad_entry_title)
                 )
             }
         },
@@ -112,17 +111,20 @@ fun HomeScreen(
 
 @Composable
 private fun HomeBody(
-    itemList: List<Item>, onItemClick: (Int) -> Unit, modifier: Modifier = Modifier
+    itemList: List<ciudad>, onItemClick: (Int) -> Unit, modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
         if (itemList.isEmpty()) {
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = stringResource(R.string.no_item_description),
+                text = stringResource(R.string.no_ciudad_description),
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge.copy(
+                    color = Color.White
+                )
             )
         } else {
             InventoryList(
@@ -136,7 +138,7 @@ private fun HomeBody(
 
 @Composable
 private fun InventoryList(
-    itemList: List<Item>, onItemClick: (Item) -> Unit, modifier: Modifier = Modifier
+    itemList: List<ciudad>, onItemClick: (ciudad) -> Unit, modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
         items(items = itemList, key = { it.id }) { item ->
@@ -150,31 +152,33 @@ private fun InventoryList(
 
 @Composable
 private fun InventoryItem(
-    item: Item, modifier: Modifier = Modifier
+    item: ciudad, modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+
     ) {
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = item.name,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = Color.Green
+                    )
                 )
                 Spacer(Modifier.weight(1f))
-                Text(
-                    text = item.formatedPrice(),
-                    style = MaterialTheme.typography.titleMedium
-                )
             }
+
             Text(
-                text = stringResource(R.string.in_stock, item.quantity),
-                style = MaterialTheme.typography.titleMedium
+                    text = item.pais,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = Color.White
+                    )
             )
         }
     }
@@ -185,7 +189,7 @@ private fun InventoryItem(
 fun HomeBodyPreview() {
     InventoryTheme {
         HomeBody(listOf(
-            Item(1, "Game", 100.0, 20), Item(2, "Pen", 200.0, 30), Item(3, "TV", 300.0, 50)
+            ciudad(1, "manta", "ecuador", "manabi", 34567), ciudad(2, "portoviejo", "ecuador", "manabi", 93080), ciudad(3, "chone", "ecuador", "manabi", 11110)
         ), onItemClick = {})
     }
 }
@@ -203,7 +207,7 @@ fun HomeBodyEmptyListPreview() {
 fun InventoryItemPreview() {
     InventoryTheme {
         InventoryItem(
-            Item(1, "Game", 100.0, 20),
+            ciudad(1, "manta", "ecuador", "manabi", 34567),
         )
     }
 }

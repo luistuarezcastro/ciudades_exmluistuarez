@@ -18,14 +18,19 @@ package com.example.inventory.data
 
 import kotlinx.coroutines.flow.Flow
 
-class OfflineItemsRepository(private val itemDao: ItemDao) : ItemsRepository {
-    override fun getAllItemsStream(): Flow<List<Item>> = itemDao.getAllItems()
+class OfflineciudadRepository(private val itemDao: ciudadDao) : ciudadRepository {
+    // mostar las ciudades
+    override fun getAllciudadStream(): Flow<List<ciudad>> = itemDao.getAllciudad()
 
-    override fun getItemStream(id: Int): Flow<Item?> = itemDao.getItem(id)
+    //mostrar ciudad por id
+    override fun getciudadStream(id: Int): Flow<ciudad?> = itemDao.getciudad(id)
 
-    override suspend fun insertItem(item: Item) = itemDao.insert(item)
+    //insertar ciudad
+    override suspend fun insertciudad(item: ciudad) = itemDao.insert(item)
 
-    override suspend fun deleteItem(item: Item) = itemDao.delete(item)
+    //borrar ciudad
+    override suspend fun deleteciudad(item: ciudad) = itemDao.delete(item)
 
-    override suspend fun updateItem(item: Item) = itemDao.update(item)
+    //actualizar la ciudad
+    override suspend fun updateciudad(item: ciudad) = itemDao.update(item)
 }

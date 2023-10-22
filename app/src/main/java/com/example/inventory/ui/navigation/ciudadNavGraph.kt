@@ -25,16 +25,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.inventory.ui.home.HomeDestination
 import com.example.inventory.ui.home.HomeScreen
-import com.example.inventory.ui.item.ItemDetailsDestination
-import com.example.inventory.ui.item.ItemDetailsScreen
-import com.example.inventory.ui.item.ItemEditDestination
-import com.example.inventory.ui.item.ItemEditScreen
-import com.example.inventory.ui.item.ItemEntryDestination
-import com.example.inventory.ui.item.ItemEntryScreen
+import com.example.inventory.ui.ciudad.ItemDetailsDestination
+import com.example.inventory.ui.ciudad.ItemDetailsScreen
+import com.example.inventory.ui.ciudad.ItemEditDestination
+import com.example.inventory.ui.ciudad.ItemEditScreen
+import com.example.inventory.ui.ciudad.ItemEntryDestination
+import com.example.inventory.ui.ciudad.ItemEntryScreen
 
-/**
- * Provides Navigation graph for the application.
- */
 @Composable
 fun InventoryNavHost(
     navController: NavHostController,

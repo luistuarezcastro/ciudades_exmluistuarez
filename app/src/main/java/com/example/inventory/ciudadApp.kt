@@ -33,9 +33,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.inventory.R.string
 import com.example.inventory.ui.navigation.InventoryNavHost
 
-/**
- * Top level composable that represents screens for the application.
- */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun InventoryApp(navController: NavHostController = rememberNavController()) {

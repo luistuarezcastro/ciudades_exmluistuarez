@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.inventory.ui.item
+package com.example.inventory.ui.ciudad
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 
 object ItemEditDestination : NavigationDestination {
     override val route = "item_edit"
-    override val titleRes = R.string.edit_item_title
+    override val titleRes = R.string.edit_ciudad_title
     const val itemIdArg = "itemId"
     val routeWithArgs = "$route/{$itemIdArg}"
 }
@@ -45,8 +45,9 @@ fun ItemEditScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ItemEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
-) {
+    viewModel: ciudadEditarViewModel = viewModel(factory = AppViewModelProvider.Factory)
+)
+{
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
         topBar = {
@@ -62,10 +63,6 @@ fun ItemEditScreen(
             itemUiState = viewModel.itemUiState,
             onItemValueChange = viewModel::updateUiState,
             onSaveClick = {
-                // Note: If the user rotates the screen very fast, the operation may get cancelled
-                // and the item may not be updated in the Database. This is because when config
-                // change occurs, the Activity will be recreated and the rememberCoroutineScope will
-                // be cancelled - since the scope is bound to composition.
                 coroutineScope.launch {
                     viewModel.updateItem()
                     navigateBack()

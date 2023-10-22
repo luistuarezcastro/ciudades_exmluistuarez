@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.inventory.ui.item
+@file:JvmName("CiudadEditarViewModelKt")
+
+package com.example.inventory.ui.ciudad
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,18 +26,22 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
@@ -44,13 +50,14 @@ import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.navigation.NavigationDestination
 import com.example.inventory.ui.theme.InventoryTheme
 import kotlinx.coroutines.launch
-import java.util.Currency
-import java.util.Locale
 
 object ItemEntryDestination : NavigationDestination {
     override val route = "item_entry"
-    override val titleRes = R.string.item_entry_title
+    override val titleRes = R.string.ciudad_entry_title
 }
+//0xFF098D81
+val CyanBackgroundColor = Color(0xFF098D81)
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +82,7 @@ fun ItemEntryScreen(
             onItemValueChange = viewModel::updateUiState,
             onSaveClick = {
                 // Note: If the user rotates the screen very fast, the operation may get cancelled
-                // and the item may not be saved in the Database. This is because when config
+                // and the ciudad may not be saved in the Database. This is because when config
                 // change occurs, the Activity will be recreated and the rememberCoroutineScope will
                 // be cancelled - since the scope is bound to composition.
                 coroutineScope.launch {
@@ -94,7 +101,7 @@ fun ItemEntryScreen(
 @Composable
 fun ItemEntryBody(
     itemUiState: ItemUiState,
-    onItemValueChange: (ItemDetails) -> Unit,
+    onItemValueChange: (ciudadDetails) -> Unit,
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -102,8 +109,18 @@ fun ItemEntryBody(
         modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large))
     ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            //datos del estudiante
+            text = "Tuarez Castro Luis\nciudad\n7mo B appmbl",
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        )
         ItemInputForm(
-            itemDetails = itemUiState.itemDetails,
+            ciudadDetails = itemUiState.ciudadDetails,
             onValueChange = onItemValueChange,
             modifier = Modifier.fillMaxWidth()
         )
@@ -111,7 +128,9 @@ fun ItemEntryBody(
             onClick = onSaveClick,
             enabled = itemUiState.isEntryValid,
             shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.outlinedButtonColors(Color.Cyan) // Cambia Color.Red al color que desees
+
         ) {
             Text(text = stringResource(R.string.save_action))
         }
@@ -121,9 +140,9 @@ fun ItemEntryBody(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemInputForm(
-    itemDetails: ItemDetails,
+    ciudadDetails: ciudadDetails,
     modifier: Modifier = Modifier,
-    onValueChange: (ItemDetails) -> Unit = {},
+    onValueChange: (ciudadDetails) -> Unit = {},
     enabled: Boolean = true
 ) {
     Column(
@@ -131,51 +150,50 @@ fun ItemInputForm(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ) {
         OutlinedTextField(
-            value = itemDetails.name,
-            onValueChange = { onValueChange(itemDetails.copy(name = it)) },
-            label = { Text(stringResource(R.string.item_name_req)) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
+            value = ciudadDetails.name,
+            onValueChange = { onValueChange(ciudadDetails.copy(name = it)) },
+            label = { Text(stringResource(R.string.ciudad_name_req)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            textStyle = TextStyle(color = Color.White)
         )
         OutlinedTextField(
-            value = itemDetails.price,
-            onValueChange = { onValueChange(itemDetails.copy(price = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            label = { Text(stringResource(R.string.item_price_req)) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            leadingIcon = { Text(Currency.getInstance(Locale.getDefault()).symbol) },
+            value = ciudadDetails.pais,
+            onValueChange = { onValueChange(ciudadDetails.copy(pais = it)) },
+            label = { Text(stringResource(R.string.ciudad_pais_req)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            textStyle = TextStyle(color = Color.White)
+
         )
         OutlinedTextField(
-            value = itemDetails.quantity,
-            onValueChange = { onValueChange(itemDetails.copy(quantity = it)) },
+            value = ciudadDetails.provincia,
+            onValueChange = { onValueChange(ciudadDetails.copy(provincia = it)) },
+            label = { Text(stringResource(R.string.provincia_req)) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true,
+            textStyle = TextStyle(color = Color.White)
+        )
+
+        OutlinedTextField(
+            value = ciudadDetails.codigo_postal,
+            onValueChange = { onValueChange(ciudadDetails.copy(codigo_postal = it)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            label = { Text(stringResource(R.string.quantity_req)) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
+            label = { Text(stringResource(R.string.codigo_postal_req)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            textStyle = TextStyle(color = Color.White)
         )
+
         if (enabled) {
             Text(
                 text = stringResource(R.string.required_fields),
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium)),
+                color = Color.White
             )
         }
     }
@@ -186,8 +204,8 @@ fun ItemInputForm(
 private fun ItemEntryScreenPreview() {
     InventoryTheme {
         ItemEntryBody(itemUiState = ItemUiState(
-            ItemDetails(
-                name = "Item name", price = "10.00", quantity = "5"
+            ciudadDetails(
+                name = "Nombre ciudad", pais = "ciudad", provincia = "provincia", codigo_postal = "54321"
             )
         ), onItemValueChange = {}, onSaveClick = {})
     }

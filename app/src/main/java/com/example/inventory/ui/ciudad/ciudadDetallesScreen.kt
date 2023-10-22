@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package com.example.inventory.ui.item
+package com.example.inventory.ui.ciudad
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -28,7 +26,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,6 +45,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,7 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
-import com.example.inventory.data.Item
+import com.example.inventory.data.ciudad
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.navigation.NavigationDestination
 import com.example.inventory.ui.theme.InventoryTheme
@@ -62,7 +61,7 @@ import kotlinx.coroutines.launch
 
 object ItemDetailsDestination : NavigationDestination {
     override val route = "item_details"
-    override val titleRes = R.string.item_detail_title
+    override val titleRes = R.string.ciudad_detail_title
     const val itemIdArg = "itemId"
     val routeWithArgs = "$route/{$itemIdArg}"
 }
@@ -86,24 +85,23 @@ fun ItemDetailsScreen(
             )
         }, floatingActionButton = {
             FloatingActionButton(
-                onClick = { navigateToEditItem(uiState.value.itemDetails.id) },
+                onClick = { navigateToEditItem(uiState.value.ciudadDetails.id) },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large))
 
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(R.string.edit_item_title),
+                    contentDescription = stringResource(R.string.edit_ciudad_title),
                 )
             }
         }, modifier = modifier
     ) { innerPadding ->
         ItemDetailsBody(
             itemDetailsUiState = uiState.value,
-            onSellItem = { viewModel.reduceQuantityByOne() },
             onDelete = {
                 // Note: If the user rotates the screen very fast, the operation may get cancelled
-                // and the item may not be deleted from the Database. This is because when config
+                // and the ciudad may not be deleted from the Database. This is because when config
                 // change occurs, the Activity will be recreated and the rememberCoroutineScope will
                 // be cancelled - since the scope is bound to composition.
                 coroutineScope.launch {
@@ -121,7 +119,6 @@ fun ItemDetailsScreen(
 @Composable
 private fun ItemDetailsBody(
     itemDetailsUiState: ItemDetailsUiState,
-    onSellItem: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -131,20 +128,15 @@ private fun ItemDetailsBody(
     ) {
         var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
         ItemDetails(
-            item = itemDetailsUiState.itemDetails.toItem(), modifier = Modifier.fillMaxWidth()
+            item = itemDetailsUiState.ciudadDetails.toItem(), modifier = Modifier.fillMaxWidth()
         )
-        Button(
-            onClick = onSellItem,
-            modifier = Modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.small,
-            enabled = !itemDetailsUiState.outOfStock
-        ) {
-            Text(stringResource(R.string.sell))
-        }
         OutlinedButton(
             onClick = { deleteConfirmationRequired = true },
             shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.outlinedButtonColors(Color.Cyan) // Cambia Color.Red al color que desees
+
+            //boton de borrar
         ) {
             Text(stringResource(R.string.delete))
         }
@@ -161,15 +153,15 @@ private fun ItemDetailsBody(
     }
 }
 
-
+//fondo de los datos q se deben mostrar
 @Composable
 fun ItemDetails(
-    item: Item, modifier: Modifier = Modifier
+    item: ciudad, modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier, colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = MaterialTheme.colorScheme.tertiary,
+            contentColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
         Column(
@@ -179,7 +171,7 @@ fun ItemDetails(
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
         ) {
             ItemDetailsRow(
-                labelResID = R.string.item,
+                labelResID = R.string.ciudad,
                 itemDetail = item.name,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(
@@ -189,8 +181,8 @@ fun ItemDetails(
                 )
             )
             ItemDetailsRow(
-                labelResID = R.string.quantity_in_stock,
-                itemDetail = item.quantity.toString(),
+                labelResID = R.string.pais,
+                itemDetail = item.pais,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(
                         id = R.dimen
@@ -199,8 +191,8 @@ fun ItemDetails(
                 )
             )
             ItemDetailsRow(
-                labelResID = R.string.price,
-                itemDetail = item.formatedPrice(),
+                labelResID = R.string.address,
+                itemDetail = item.provincia,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(
                         id = R.dimen
@@ -208,20 +200,30 @@ fun ItemDetails(
                     )
                 )
             )
+            ItemDetailsRow(
+                labelResID = R.string.codigo_postal,
+                itemDetail = item.codigo_postal.toString(),
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(
+                        id = R.dimen
+                            .padding_medium
+                    )
+                )
+            )
+
         }
 
     }
 }
 
 @Composable
+//descripciones como nombres de ciudad y su respectivo nombre
 private fun ItemDetailsRow(
     @StringRes labelResID: Int, itemDetail: String, modifier: Modifier = Modifier
 ) {
-    Row(modifier = modifier) {
-        Text(text = stringResource(labelResID))
-        Spacer(modifier = Modifier.weight(1f))
-        Text(text = itemDetail, fontWeight = FontWeight.Bold)
-    }
+    Text(modifier = Modifier.fillMaxWidth(),text = stringResource(labelResID),fontWeight = FontWeight.Bold,color = Color.White, )
+    Text(modifier = Modifier.fillMaxWidth(),text = itemDetail, color = Color.Cyan, )
+
 }
 
 @Composable
@@ -249,7 +251,7 @@ private fun DeleteConfirmationDialog(
 fun ItemDetailsScreenPreview() {
     InventoryTheme {
         ItemDetailsBody(ItemDetailsUiState(
-            outOfStock = true, itemDetails = ItemDetails(1, "Pen", "$100", "10")
-        ), onSellItem = {}, onDelete = {})
+            outOfStock = true, ciudadDetails = ciudadDetails(1, "ciudad", "pais", "provincia", "56261")
+        ), onDelete = {})
     }
 }
